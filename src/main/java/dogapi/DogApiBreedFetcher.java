@@ -24,30 +24,29 @@ public class DogApiBreedFetcher implements BreedFetcher {
      * @throws BreedNotFoundException if the breed does not exist (or if the API call fails for any reason)
      */
     @Override
-    public List<String> getSubBreeds(String breed) {
+    public List<String> getSubBreeds(String breed) throws BreedNotFoundException, IOException{
         final Request request = new Request.Builder()
                 .url("https://api.dogapi.com/v2/breeds/" + breed).build();
 
         final Response response;
         final JSONObject responseBody;
         ArrayList<String> subBreeds = new ArrayList<>();
-        try {
-            response = client.newCall(request).execute();
-            responseBody = new JSONObject(response.body().string());
-            if (responseBody.getString("status").equals("success")) {
-                final JSONArray breedsArray = responseBody.getJSONArray("message");
-                for (int i = 0; i < breedsArray.length(); i++) {
-                    subBreeds.add(breedsArray.getString(i));
-                }
+        response = client.newCall(request).execute();
+        responseBody = new JSONObject(response.body().string());
+        if (responseBody.getString("status").equals("success")) {
+            final JSONArray breedsArray = responseBody.getJSONArray("message");
+            for (int i = 0; i < breedsArray.length(); i++) {
+                subBreeds.add(breedsArray.getString(i));
             }
-        } catch (BreedNotFoundException | IOException e) {
-            throw new RuntimeException(e);
+            return  subBreeds;
         }
-        return subBreeds;
+        else {
+            throw new BreedNotFoundException(breed);
+        }
+    }
         // TODO Task 1: Complete this method based on its provided documentation
         //      and the documentation for the dog.ceo API. You may find it helpful
         //      to refer to the examples of using OkHttpClient from the last lab,
         //      as well as the code for parsing JSON responses.
         // return statement included so that the starter code can compile and run.
-    }
 }
