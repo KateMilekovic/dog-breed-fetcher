@@ -31,7 +31,6 @@ public class Main {
             breeds = breedFetcher.getSubBreeds(breed);
             return breeds.size();
             /*else {
-                throw new IOException();
             }*/
         } catch (BreedFetcher.BreedNotFoundException e) {
             return 0;

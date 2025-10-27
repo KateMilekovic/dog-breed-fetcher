@@ -44,7 +44,6 @@ public class CachingBreedFetcher implements BreedFetcher {
             }
         }
     }
-
     public int getCallsMade() {
         return callsMade;
     }
