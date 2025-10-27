@@ -24,23 +24,25 @@ public class DogApiBreedFetcher implements BreedFetcher {
      * @throws BreedNotFoundException if the breed does not exist (or if the API call fails for any reason)
      */
     @Override
-    public List<String> getSubBreeds(String breed) throws BreedNotFoundException, IOException{
+    public List<String> getSubBreeds(String breed) throws BreedNotFoundException {
         final Request request = new Request.Builder()
-                .url("https://api.dogapi.com/v2/breeds/" + breed).build();
-
-        final Response response;
+                .url("https://dog.ceo/api/breed/" + breed + "/list").build();
         final JSONObject responseBody;
         ArrayList<String> subBreeds = new ArrayList<>();
-        response = client.newCall(request).execute();
-        responseBody = new JSONObject(response.body().string());
-        if (responseBody.getString("status").equals("success")) {
-            final JSONArray breedsArray = responseBody.getJSONArray("message");
-            for (int i = 0; i < breedsArray.length(); i++) {
-                subBreeds.add(breedsArray.getString(i));
+        try (Response response = client.newCall(request).execute()) {
+            responseBody = new JSONObject(response.body().string());
+            System.out.println(responseBody);
+            if (responseBody.getString("status").equals("success")) {
+                final JSONArray breedsArray = responseBody.getJSONArray("message");
+                for (int i = 0; i < breedsArray.length(); i++) {
+                    subBreeds.add(breedsArray.getString(i));
+                }
+                return  subBreeds;
             }
-            return  subBreeds;
-        }
-        else {
+            else {
+                throw new BreedNotFoundException(breed);
+            }
+        } catch (IOException e) {
             throw new BreedNotFoundException(breed);
         }
     }
