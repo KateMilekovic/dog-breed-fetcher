@@ -26,15 +26,14 @@ public class Main {
      * returned by the fetcher
      */
     public static int getNumberOfSubBreeds(String breed, BreedFetcher breedFetcher) {
-        List<String> breeds = new ArrayList<String>();
+        List<String> breeds;
         try {
             breeds = breedFetcher.getSubBreeds(breed);
             return breeds.size();
             /*else {
                 throw new IOException();
             }*/
-        } catch (IOException | BreedFetcher.BreedNotFoundException e) {
-            System.out.println(e.getMessage());
+        } catch (BreedFetcher.BreedNotFoundException e) {
             return 0;
         }
         // TODO Task 3 implement this code so that it is entirely consistent with its provided documentation.
